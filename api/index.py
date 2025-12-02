@@ -3,15 +3,7 @@ from flask_cors import CORS
 import sys
 import os
 
-# Import analyzers and utilities (now in same directory structure)
-from analyzers.seo_analyzer import SEOAnalyzer
-from analyzers.serp_analyzer import SERPAnalyzer
-from analyzers.aeo_analyzer import AEOAnalyzer
-from analyzers.humanization_analyzer import HumanizationAnalyzer
-from analyzers.differentiation_analyzer import DifferentiationAnalyzer
-from utils.text_extractor import TextExtractor
-from utils.ai_improver import AIContentImprover
-
+# Initialize Flask app first
 app = Flask(__name__)
 
 # Enable CORS for Vercel deployment
@@ -23,13 +15,47 @@ CORS(app, resources={
     }
 })
 
+# Try to import and initialize NLTK
+try:
+    import nltk
+    nltk.data.path.append('/tmp/nltk_data')
+    # Download required NLTK data
+    try:
+        nltk.download('punkt', download_dir='/tmp/nltk_data', quiet=True)
+        nltk.download('stopwords', download_dir='/tmp/nltk_data', quiet=True)
+    except:
+        pass
+except Exception as e:
+    print(f"NLTK initialization warning: {e}")
+
+# Import analyzers and utilities with error handling
+try:
+    from analyzers.seo_analyzer import SEOAnalyzer
+    from analyzers.serp_analyzer import SERPAnalyzer
+    from analyzers.aeo_analyzer import AEOAnalyzer
+    from analyzers.humanization_analyzer import HumanizationAnalyzer
+    from analyzers.differentiation_analyzer import DifferentiationAnalyzer
+    from utils.text_extractor import TextExtractor
+    from utils.ai_improver import AIContentImprover
+    MODULES_LOADED = True
+except Exception as e:
+    print(f"Module import error: {e}")
+    MODULES_LOADED = False
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    return jsonify({"status": "healthy", "message": "Content Audit API is running"})
+    return jsonify({
+        "status": "healthy", 
+        "message": "Content Audit API is running",
+        "modules_loaded": MODULES_LOADED
+    })
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_content():
     """Main endpoint to analyze content"""
+    if not MODULES_LOADED:
+        return jsonify({"error": "Server initialization failed. Please check logs."}), 500
+    
     try:
         data = request.json
         input_data = data.get('input', '')
