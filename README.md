@@ -61,9 +61,6 @@
 
 ---
 
-## 🚀 Quick Deploy
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vamsi-op/content-enhancer)
 
 ### Environment Variables
 
@@ -192,7 +189,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built for Hacktoberfest 2025
+- Built for Buildathon - AI for Vizag
 - Powered by OpenAI API
 - Deployed on Vercel
 
