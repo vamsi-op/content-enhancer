@@ -31,6 +31,12 @@ except Exception as e:
 # Import analyzers and utilities with error handling
 IMPORT_ERROR = None
 try:
+    # Use relative imports for Vercel serverless
+    import sys
+    import os
+    # Add current directory to path
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
     from analyzers.seo_analyzer import SEOAnalyzer
     from analyzers.serp_analyzer import SERPAnalyzer
     from analyzers.aeo_analyzer import AEOAnalyzer
