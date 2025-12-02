@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
+import './themes/style.css'
 import AuditForm from './components/AuditForm'
 import ResultsDashboard from './components/ResultsDashboard'
 
@@ -44,15 +45,6 @@ function App() {
     
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [])
-
-  // Load OpenAI theme on mount
-  useEffect(() => {
-    const link = document.createElement('link')
-    link.id = 'theme-stylesheet'
-    link.rel = 'stylesheet'
-    link.href = `/src/themes/style.css`
-    document.head.appendChild(link)
   }, [])
 
   // Auto-scroll to results when they appear
