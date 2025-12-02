@@ -1,7 +1,8 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "frontend/dist",
   "installCommand": "pip install -r api/requirements.txt",
+  "framework": "vite",
   "rewrites": [
     {
       "source": "/api/:path*",
