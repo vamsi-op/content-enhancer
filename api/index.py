@@ -244,5 +244,7 @@ def _get_top_recommendations(all_results):
     
     return unique_recs[:5]
 
-# Export the app for Vercel
-handler = app
+# Vercel looks for 'app' or 'application' variable
+# This exports the Flask app for Vercel's Python runtime
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
