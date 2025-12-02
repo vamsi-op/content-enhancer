@@ -3,12 +3,7 @@ from flask_cors import CORS
 import sys
 import os
 
-# Set up path for imports
-current_dir = os.path.dirname(os.path.abspath(__file__))
-backend_dir = os.path.join(current_dir, '..', 'backend')
-sys.path.insert(0, backend_dir)
-
-# Import analyzers and utilities
+# Import analyzers and utilities (now in same directory structure)
 from analyzers.seo_analyzer import SEOAnalyzer
 from analyzers.serp_analyzer import SERPAnalyzer
 from analyzers.aeo_analyzer import AEOAnalyzer
