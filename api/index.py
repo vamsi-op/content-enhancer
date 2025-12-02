@@ -29,6 +29,7 @@ except Exception as e:
     print(f"NLTK initialization warning: {e}")
 
 # Import analyzers and utilities with error handling
+IMPORT_ERROR = None
 try:
     from analyzers.seo_analyzer import SEOAnalyzer
     from analyzers.serp_analyzer import SERPAnalyzer
@@ -39,7 +40,10 @@ try:
     from utils.ai_improver import AIContentImprover
     MODULES_LOADED = True
 except Exception as e:
+    IMPORT_ERROR = str(e)
     print(f"Module import error: {e}")
+    import traceback
+    traceback.print_exc()
     MODULES_LOADED = False
 
 @app.route('/api/health', methods=['GET'])
@@ -47,7 +51,8 @@ def health_check():
     return jsonify({
         "status": "healthy", 
         "message": "Content Audit API is running",
-        "modules_loaded": MODULES_LOADED
+        "modules_loaded": MODULES_LOADED,
+        "error": IMPORT_ERROR if not MODULES_LOADED else None
     })
 
 @app.route('/api/analyze', methods=['POST'])
