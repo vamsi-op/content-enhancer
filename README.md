@@ -1,230 +1,209 @@
 # 🎯 Content Quality Audit Tool
 
-**Hackathon 2025 Submission**
+> AI-powered content analysis tool that scores content across 5 critical dimensions with real-time SERP analysis and intelligent recommendations.
 
-A comprehensive content analysis tool that scores content across 5 critical dimensions with AI-powered insights and predictions.
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://content-enhancer.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Features
+![Content Audit Tool](https://img.shields.io/badge/Made%20with-React%20%2B%20Flask-61DAFB?style=flat&logo=react)
 
-### Core Analysis Modules
-1. **SEO Score** (0-100)
-   - Keyword density analysis
-   - Flesch-Kincaid readability
-   - Header structure validation
-   - Meta description check
+---
 
-2. **SERP Performance Score** (0-100)
-   - Scrapes top 10 Google results
-   - Compares word count, topics, content elements
-   - **AI Rank Predictor**: Shows current vs improved ranking (e.g., Rank 27 → Rank 9)
-   - Competitor fingerprinting (patterns analysis)
+## ✨ Features
 
-3. **AEO Score** (0-100)
-   - Citation quality detection
-   - Structured formatting check
-   - AI-friendly patterns analysis
+### 📊 Comprehensive Content Analysis
 
-4. **Humanization Score** (0-100)
-   - Sentence variety analysis
-   - AI pattern detection
-   - **Humanization Heatmap**: Color-coded AI vs human sentences
+- **SEO Score** - Keyword density, readability, meta tags, and header structure
+- **SERP Performance** - Real-time comparison with top 10 Google results
+- **AEO Score** - AI-friendly content structure and citation quality
+- **Humanization Score** - Detects AI-generated patterns with visual heatmap
+- **Differentiation Score** - Measures uniqueness against competitors
 
-5. **Differentiation Score** (0-100)
-   - Content uniqueness vs SERP top 3
-   - Unique examples detection
-   - Voice differentiation
+### 🚀 Unique Capabilities
 
-### Signature Features (Competitive Advantage)
-- **📈 AI Rank Simulator**: Visual before/after ranking prediction
-- **🌡️ Humanization Heatmap**: Highlights AI-patterned sentences
-- **🔄 AI-Powered Rewrites**: Fix content issues with OpenAI (one-click improvements)
-- **⚡ Lightning Fast**: Instant analysis (URL → Full audit in 5 seconds)
-- **🎨 Clean Dashboard**: Notion-style UI with color-coded scores
+- **AI Rank Simulator** - Predicts ranking improvement (e.g., Rank #27 → #9)
+- **Competitor Intelligence** - Analyzes top 10 SERP patterns and content strategies
+- **Humanization Heatmap** - Color-coded visualization of AI vs human-like text
+- **One-Click AI Rewrite** - Fix content issues with OpenAI-powered suggestions
+- **History Tracking** - Save and revisit past analyses with localStorage
+- **Export Options** - Download as JSON or formatted HTML report
+
+---
+
+## 🎥 Demo
+
+**Live Site:** [https://content-enhancer.vercel.app](https://content-enhancer.vercel.app)
+
+### Quick Start
+1. Paste content or enter a URL
+2. Add target keyword (optional)
+3. Click "Analyze Content"
+4. Get instant scores across 5 dimensions
+
+---
 
 ## 🛠️ Tech Stack
 
-**Backend:**
-- Python 3.11+
-- Flask + Flask-CORS
-- BeautifulSoup4 (SERP scraping)
-- NLTK + TextStat (NLP analysis)
-- Scikit-learn (text similarity)
-- OpenAI API (content improvements)
+**Frontend**
+- React 18 + Vite
+- Modern CSS with responsive design
+- Local Storage for history
 
-**Frontend:**
-- React 18 (Vite)
-- Modern CSS (responsive, gradient design)
-- Local Storage (history feature)
+**Backend**
+- Python 3.9+ with Flask
+- BeautifulSoup4 for SERP scraping
+- TextStat for readability analysis
+- OpenAI API for content improvements
 
-**Deployment:**
-- Vercel (Serverless deployment)
-- Auto-scaling, CDN, HTTPS included
+**Deployment**
+- Vercel (Serverless)
+- Auto-scaling, CDN, HTTPS
 
-## 📦 Installation
+---
 
-### Quick Deploy to Vercel (Recommended)
+## 🚀 Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/content-audit-tool)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vamsi-op/content-enhancer)
 
-**OR follow the detailed guide:** [DEPLOYMENT.md](DEPLOYMENT.md)
+### Environment Variables
 
-**Quick steps:**
-1. Push to GitHub
-2. Import to Vercel
-3. Add `OPENAI_API_KEY` environment variable
-4. Deploy! ✨
+Add to Vercel dashboard:
+- `OPENAI_API_KEY` - Your OpenAI API key (for AI rewrite features)
 
-### Local Development
+---
 
-#### Backend Setup
+## 💻 Local Development
+
+### Prerequisites
+- Python 3.9+
+- Node.js 16+
+- OpenAI API key (optional, for AI features)
+
+### Backend Setup
+
 ```bash
 cd backend
 python -m venv venv
-.\venv\Scripts\Activate.ps1  # Windows
-# source venv/bin/activate    # Mac/Linux
+source venv/bin/activate  # Windows: .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
-# Create .env file with your OpenAI API key
+# Create .env file
 echo "OPENAI_API_KEY=your_key_here" > .env
 
 python app.py
 ```
 
-Backend runs on: http://localhost:5000
+Backend runs on `http://localhost:5000`
 
-#### Frontend Setup
+### Frontend Setup
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend runs on: http://localhost:5173
-
-### Build for Production
-```bash
-# Windows
-.\build.ps1
-
-# Mac/Linux
-./build.sh
-```
-
-## 🚀 Deployment
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
-
-**Environment Variables Required:**
-- `OPENAI_API_KEY` - Your OpenAI API key (required for AI features)
-
-## 🎮 Usage
-
-1. **Enter Content**: Paste text OR enter a URL
-2. **Add Keyword** (optional): Target keyword for SEO analysis
-3. **Click Analyze**: Get instant results across all 5 dimensions
-4. **View Insights**:
-   - Overall content quality score
-   - AI rank prediction (current vs improved)
-   - Detailed breakdown for each dimension
-   - Humanization heatmap
-   - Top recommendations
-
-## 📊 What Makes This Special
-
-### 1. Real SERP Analysis (Not Hand-Wavy)
-- Actually scrapes top 10 Google results
-- Compares word count, headers, content elements
-- Shows competitor patterns: "80% include case studies, 70% use comparison tables"
-
-### 2. AI Rank Simulator
-```
-Current Estimate: Rank #27
-With Improvements: Rank #9
-↑ Improvement: +18 positions
-```
-
-### 3. Humanization Heatmap
-Visually highlights AI-like sentences:
-- 🟢 Green = Human-like
-- 🔴 Red = AI patterns detected
-
-### 4. One-Click AI Improvements
-- Fix meta description
-- Rewrite AI-sounding paragraphs
-- Suggest missing subtopics
-
-## 🏆 Competitive Edge
-
-**vs Other Teams:**
-- ✅ Working prototype (not slideware)
-- ✅ Real SERP data (not mocked)
-- ✅ Unique visualizations (rank simulator + heatmap)
-- ✅ Clean, fast UI (Notion-style)
-- ✅ AI-powered fixes (OpenAI integration)
-
-**Judge-Friendly:**
-- Visible, impressive results
-- Solves universal pain point
-- Live demo ready
-- Works on any content/URL
-
-## 📝 Example Output
-
-```
-CONTENT AUDIT RESULTS
-
-Overall Score: 68.4/100
-
-📈 AI Rank Prediction:
-Current Estimate: Rank #22
-With Improvements: Rank #8
-Message: Fix these issues to potentially move from Rank 22 → Rank 8
-
-🔍 SEO Score: 72/100
-✓ Good: Header structure present (H1, H2, H3)
-✗ Issue: Keyword "budget laptops" appears only 2 times (0.4% density)
-→ Rec: Increase keyword to 5-7 mentions (aim for 1.5% density)
-
-📊 SERP Performance: 58/100
-✗ Issue: Content 58% shorter than SERP average
-→ Rec: Expand to 2,500+ words covering missing subtopics
-
-🤖 AEO Score: 65/100
-✗ Issue: No FAQ section detected
-→ Rec: Add FAQ section with schema markup
-
-👤 Humanization: 58/100
-✗ Issue: 40% sentences start the same way
-→ Rec: Vary sentence starters and lengths
-
-💎 Differentiation: 51/100
-✗ Issue: 70% content overlap with top 3 SERP results
-→ Rec: Add original data points or unique examples
-```
-
-## 🎯 Built For
-
-**Hackathon Success Criteria:**
-- ✅ Accepts text OR URL inputs
-- ✅ Generates meaningful scores (0-100)
-- ✅ SERP analysis with real data
-- ✅ Specific, actionable recommendations
-- ✅ Clean dashboard presentation
-- ✅ Working prototype
-
-## 🎨 UI Highlights
-
-- Gradient header (purple → pink)
-- Color-coded score badges (green/yellow/red)
-- Rank simulator with visual comparison
-- Heatmap for AI patterns
-- Responsive design
-- Fast, smooth interactions
-
-## 📄 License
-
-MIT License - Built for Hackathon 2025
+Frontend runs on `http://localhost:5173`
 
 ---
 
-**Made with ❤️ and lots of ☕**
+## 📖 Usage Examples
+
+### Analyze a Blog Post
+
+```
+Input: Paste your blog content
+Keyword: "best budget laptops"
+Result: Overall Score 68.4/100
+- SEO: 72/100 ✓ Good structure
+- SERP: 58/100 ⚠️ 42% shorter than competitors
+- AEO: 65/100 ⚠️ Missing FAQ section
+- Humanization: 58/100 ⚠️ Repetitive sentence patterns
+- Differentiation: 51/100 ⚠️ 70% content overlap
+```
+
+### Analyze a URL
+
+```
+Input: https://example.com/article
+Result: Full analysis with SERP comparison
+- Current estimated rank: #22
+- With improvements: #8 potential
+```
+
+---
+
+## 🎨 Key Features Explained
+
+### AI Rank Simulator
+Visual prediction showing how fixing identified issues could improve search rankings.
+
+### SERP Intelligence
+- Scrapes top 10 Google results
+- Analyzes word count, topics, content patterns
+- Shows competitor strategies (e.g., "80% use case studies")
+
+### Humanization Heatmap
+Color-coded sentences:
+- 🟢 Green = Natural, human-like
+- 🔴 Red = AI-generated patterns detected
+
+### AI Content Rewriter
+Multiple rewrite modes:
+- Full rewrite (fix all issues)
+- SEO optimize
+- Humanize content
+- Improve readability
+- Boost engagement
+- Generate meta description
+
+---
+
+## 📊 Scoring Methodology
+
+Each dimension scored 0-100:
+- **SEO**: Keywords, readability (Flesch-Kincaid), headers, meta tags
+- **SERP**: Content length, topic coverage vs top 10 results
+- **AEO**: Structured data, citations, AI-friendly formatting
+- **Humanization**: Sentence variety, transition words, AI patterns
+- **Differentiation**: Unique examples, voice, content originality
+
+**Overall Score**: Average of all 5 dimensions
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built for Hacktoberfest 2025
+- Powered by OpenAI API
+- Deployed on Vercel
+
+---
+
+## 📧 Contact
+
+**Project Link:** [https://github.com/vamsi-op/content-enhancer](https://github.com/vamsi-op/content-enhancer)
+
+**Live Demo:** [https://content-enhancer.vercel.app](https://content-enhancer.vercel.app)
+
+---
+
+<p align="center">Made with ❤️ for content creators</p>
