@@ -15,19 +15,6 @@ CORS(app, resources={
     }
 })
 
-# Try to import and initialize NLTK
-try:
-    import nltk
-    nltk.data.path.append('/tmp/nltk_data')
-    # Download required NLTK data
-    try:
-        nltk.download('punkt', download_dir='/tmp/nltk_data', quiet=True)
-        nltk.download('stopwords', download_dir='/tmp/nltk_data', quiet=True)
-    except:
-        pass
-except Exception as e:
-    print(f"NLTK initialization warning: {e}")
-
 # Import analyzers and utilities with error handling
 IMPORT_ERROR = None
 try:
