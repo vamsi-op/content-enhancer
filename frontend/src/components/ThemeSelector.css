@@ -1,0 +1,104 @@
+.theme-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-toggle {
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  min-width: 280px;
+  background: rgba(30, 30, 50, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-option {
+  width: 100%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.theme-option:last-child {
+  margin-bottom: 0;
+}
+
+.theme-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-3px);
+}
+
+.theme-option.active {
+  background: rgba(100, 100, 255, 0.2);
+  border-color: rgba(100, 100, 255, 0.5);
+}
+
+.theme-option strong {
+  font-size: 16px;
+  display: block;
+}
+
+.theme-option span {
+  font-size: 13px;
+  opacity: 0.8;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .theme-selector {
+    top: 10px;
+    right: 10px;
+  }
+
+  .theme-dropdown {
+    min-width: 240px;
+  }
+}

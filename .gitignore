@@ -1,0 +1,13 @@
+.vercel
+*.pyc
+__pycache__/
+venv/
+.env
+.DS_Store
+node_modules/
+dist/
+*.log
+.vscode/
+*.swp
+*.swo
+*~
