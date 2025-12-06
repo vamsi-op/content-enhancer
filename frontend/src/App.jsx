@@ -108,7 +108,7 @@ function App() {
       <header>
         <div className="header-content">
           <div>
-            <h1>🎯 Content Quality Audit Tool</h1>
+            <h1>Content Quality Audit Tool</h1>
             <p>Analyze content across 5 dimensions with AI-powered insights</p>
           </div>
           <div className="header-actions">
@@ -116,14 +116,14 @@ function App() {
               className="history-toggle"
               onClick={() => setShowHistory(!showHistory)}
             >
-              📊 History {history.length > 0 && `(${history.length})`}
+              History {history.length > 0 && `(${history.length})`}
             </button>
             <button 
               className="tips-toggle"
               onClick={() => setShowTips(!showTips)}
               title="Show keyboard shortcuts"
             >
-              ⌨️ Tips
+              Tips
             </button>
           </div>
         </div>
@@ -134,12 +134,12 @@ function App() {
         <div className="modal-overlay" onClick={() => setShowTips(false)}>
           <div className="tips-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>💡 Pro Tips & Shortcuts</h3>
-              <button onClick={() => setShowTips(false)}>✕</button>
+              <h3>Pro Tips & Shortcuts</h3>
+              <button onClick={() => setShowTips(false)}>×</button>
             </div>
             <div className="tips-content">
               <div className="tip-section">
-                <h4>⌨️ Keyboard Shortcuts</h4>
+                <h4>Keyboard Shortcuts</h4>
                 <div className="shortcut-list">
                   <div className="shortcut-item">
                     <kbd>Ctrl/Cmd + K</kbd>
@@ -157,7 +157,7 @@ function App() {
               </div>
               
               <div className="tip-section">
-                <h4>✨ Pro Tips</h4>
+                <h4>Pro Tips</h4>
                 <ul className="tips-list">
                   <li>Aim for 800-2000 words for optimal SEO</li>
                   <li>Use headers (H1, H2, H3) to structure content</li>
@@ -169,7 +169,7 @@ function App() {
               </div>
               
               <div className="tip-section">
-                <h4>🎯 Quick Actions</h4>
+                <h4>Quick Actions</h4>
                 <ul className="tips-list">
                   <li>Paste text or URL - auto-detected!</li>
                   <li>Click score cards to expand/collapse</li>
@@ -187,8 +187,8 @@ function App() {
       {showHistory && (
         <div className="history-sidebar">
           <div className="history-header">
-            <h3>📊 Recent Analyses</h3>
-            <button onClick={() => setShowHistory(false)}>✕</button>
+            <h3>Recent Analyses</h3>
+            <button onClick={() => setShowHistory(false)}>×</button>
           </div>
           {history.length > 0 ? (
             <>
@@ -203,7 +203,7 @@ function App() {
                         setResults(item.results)
                         setShowHistory(false)
                       } else {
-                        alert('⚠️ This history item was saved before full results storage was enabled. Please run a new analysis to save complete results.')
+                        alert('This history item was saved before full results storage was enabled. Please run a new analysis to save complete results.')
                       }
                     }}
                     style={{ cursor: 'pointer' }}
@@ -214,7 +214,7 @@ function App() {
                       <div className="history-preview">{item.input}</div>
                       <div className="history-time">
                         {new Date(item.timestamp).toLocaleDateString()} {new Date(item.timestamp).toLocaleTimeString()}
-                        {!item.results && <span style={{color: '#ef4444', marginLeft: '8px'}}>⚠️ No data</span>}
+                        {!item.results && <span style={{color: '#ef4444', marginLeft: '8px'}}>No data</span>}
                       </div>
                     </div>
                   </div>
@@ -229,16 +229,16 @@ function App() {
                   }
                 }}
               >
-                🗑️ Clear History
+                Clear History
               </button>
             </>
           ) : (
             <div className="empty-history">
-              <div className="empty-icon">📭</div>
+              <div className="empty-icon">—</div>
               <h4>No History Yet</h4>
               <p>Your analysis history will appear here once you start auditing content.</p>
               <div className="empty-tips">
-                <p>💡 Tip: History is saved automatically and persists across sessions.</p>
+                <p>Tip: History is saved automatically and persists across sessions.</p>
               </div>
             </div>
           )}

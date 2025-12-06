@@ -37,7 +37,7 @@ export default function AuditForm({ onAnalyze, loading }) {
       <div className="form-group">
         <label>
           Enter Content or URL:
-          <span className="hint">💡 Paste text or start with http:// for URL analysis</span>
+          <span className="hint">Paste text or start with http:// for URL analysis</span>
         </label>
         <textarea 
           value={input}
@@ -49,16 +49,16 @@ export default function AuditForm({ onAnalyze, loading }) {
         {input && !isUrlInput && (
           <div className="input-stats">
             <span className="stat-item">
-              📝 {wordCount} words
+              {wordCount} words
             </span>
             <span className="stat-item">
-              🔤 {charCount} characters
+              {charCount} characters
             </span>
             <span className="stat-item">
-              ⏱️ ~{estimatedReadTime} min read
+              ~{estimatedReadTime} min read
             </span>
             <span className={`stat-item ${wordCount < 300 ? 'warning' : wordCount > 2000 ? 'warning' : 'success'}`}>
-              {wordCount < 300 ? '⚠️ Too short' : wordCount > 2000 ? '⚠️ Very long' : '✅ Good length'}
+              {wordCount < 300 ? 'Too short' : wordCount > 2000 ? 'Very long' : 'Good length'}
             </span>
           </div>
         )}
@@ -75,7 +75,7 @@ export default function AuditForm({ onAnalyze, loading }) {
       </div>
 
       <button type="submit" disabled={loading} className="analyze-btn">
-        {loading ? '⏳ Analyzing...' : '🚀 Analyze Content'}
+        {loading ? 'Analyzing...' : 'Analyze Content'}
       </button>
     </form>
   )

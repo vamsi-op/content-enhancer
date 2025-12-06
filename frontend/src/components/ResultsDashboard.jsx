@@ -21,7 +21,7 @@ export default function ResultsDashboard({ results }) {
     return (
       <div className="results-dashboard">
         <div className="error-message">
-          <h3>⚠️ Error Loading Results</h3>
+          <h3>Error Loading Results</h3>
           <p>Unable to load analysis results. Please try again.</p>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function ResultsDashboard({ results }) {
   const scores = results.scores
   const [aiImproving, setAiImproving] = useState(false)
   const [improvedContent, setImprovedContent] = useState(null)
-  const [copyButtonText, setCopyButtonText] = useState('📋 Copy to Clipboard')
+  const [copyButtonText, setCopyButtonText] = useState('Copy to Clipboard')
 
   const getScoreColor = (score) => {
     if (score >= 80) return '#10b981'
@@ -71,13 +71,13 @@ export default function ResultsDashboard({ results }) {
 </head>
 <body>
   <div class="header">
-    <h1>🎯 Content Quality Audit Report</h1>
+    <h1>Content Quality Audit Report</h1>
     <div class="score">${results.overall_score.toFixed(1)}/100</div>
     <p>Generated on ${new Date().toLocaleDateString()}</p>
   </div>
   
   <div class="section">
-    <h2>📊 Content Metrics</h2>
+    <h2>Content Metrics</h2>
     ${scores.seo?.details?.content_metrics ? `
       <div class="metric"><div class="metric-value">${scores.seo.details.content_metrics.word_count}</div><div>Words</div></div>
       <div class="metric"><div class="metric-value">${scores.seo.details.content_metrics.reading_time_minutes}</div><div>Min Read</div></div>
@@ -86,7 +86,7 @@ export default function ResultsDashboard({ results }) {
   </div>
   
   <div class="section">
-    <h2>📈 Analysis Scores</h2>
+    <h2>Analysis Scores</h2>
     <p><strong>SEO:</strong> ${scores.seo.score}/100</p>
     <p><strong>SERP Performance:</strong> ${scores.serp.score}/100</p>
     <p><strong>AEO Readiness:</strong> ${scores.aeo.score}/100</p>
@@ -95,17 +95,17 @@ export default function ResultsDashboard({ results }) {
   </div>
   
   <div class="section">
-    <h2>💪 Strengths - What's Working Well</h2>
+    <h2>Strengths - What's Working Well</h2>
     ${scores.seo.details?.good_points?.map(point => `<div style="color: #10a37f; margin: 10px 0;">✓ ${point}</div>`).join('') || '<p>Analysis in progress...</p>'}
   </div>
   
   <div class="section">
-    <h2>⚠️ Issues - Problems to Fix</h2>
+    <h2>Issues - Problems to Fix</h2>
     ${scores.seo.issues?.map(issue => `<div class="issue">✗ ${issue}</div>`).join('') || '<p>No issues found</p>'}
   </div>
   
   <div class="section">
-    <h2>💡 Recommendations - Action Items</h2>
+    <h2>Recommendations - Action Items</h2>
     ${scores.seo.recommendations?.map(rec => `<div class="recommendation">→ ${rec}</div>`).join('') || '<p>No recommendations</p>'}
   </div>
 </body>
@@ -179,13 +179,13 @@ export default function ResultsDashboard({ results }) {
     setAiImproving(false)
   }
 
-  const ScoreCard = ({ title, data, emoji }) => {
+  const ScoreCard = ({ title, data }) => {
     const [isExpanded, setIsExpanded] = useState(true)
     
     return (
       <div className="score-card">
         <div className="score-header" onClick={() => setIsExpanded(!isExpanded)}>
-          <h3>{emoji} {title}</h3>
+          <h3>{title}</h3>
           <div className="header-right">
             <div className="score-badge" style={{ backgroundColor: getScoreColor(data.score) }}>
               {data.score}/100
@@ -226,7 +226,7 @@ export default function ResultsDashboard({ results }) {
         {data.details?.good_points && data.details.good_points.length > 0 && (
           <div className="analysis-section">
             <h4 className="analysis-section-heading strengths-heading">
-              <span className="heading-icon">💪</span>
+              <span className="heading-icon">✓</span>
               <span className="heading-text">Strengths</span>
               <span className="heading-count">({data.details.good_points.length})</span>
             </h4>
@@ -242,7 +242,7 @@ export default function ResultsDashboard({ results }) {
         {data.issues && data.issues.length > 0 && (
           <div className="analysis-section">
             <h4 className="analysis-section-heading issues-heading">
-              <span className="heading-icon">⚠️</span>
+              <span className="heading-icon">!</span>
               <span className="heading-text">Issues</span>
               <span className="heading-count">({data.issues.length})</span>
             </h4>
@@ -267,7 +267,7 @@ export default function ResultsDashboard({ results }) {
         {data.recommendations && data.recommendations.length > 0 && (
           <div className="analysis-section">
             <h4 className="analysis-section-heading recommendations-heading">
-              <span className="heading-icon">💡</span>
+              <span className="heading-icon">→</span>
               <span className="heading-text">Recommendations</span>
               <span className="heading-count">({data.recommendations.length})</span>
             </h4>
@@ -301,22 +301,22 @@ export default function ResultsDashboard({ results }) {
           {results.overall_score.toFixed(1)}/100
         </div>
         <div className="score-grade">
-          {results.overall_score >= 90 ? '🏆 Excellent' : 
-           results.overall_score >= 80 ? '🌟 Great' :
-           results.overall_score >= 70 ? '👍 Good' :
-           results.overall_score >= 60 ? '⚠️ Needs Work' : '❌ Poor'}
+          {results.overall_score >= 90 ? 'Excellent' : 
+           results.overall_score >= 80 ? 'Great' :
+           results.overall_score >= 70 ? 'Good' :
+           results.overall_score >= 60 ? 'Needs Work' : 'Poor'}
         </div>
         
         {/* Export Actions */}
         <div className="export-actions">
           <button className="export-btn" onClick={exportAsJSON} title="Download as JSON">
-            📥 Export JSON
+            Export JSON
           </button>
           <button className="export-btn" onClick={exportAsHTML} title="Download as HTML Report">
-            📄 Export Report
+            Export Report
           </button>
           <button className="export-btn" onClick={shareResults} title="Share results">
-            📤 Share
+            Share
           </button>
         </div>
       </div>
@@ -325,36 +325,36 @@ export default function ResultsDashboard({ results }) {
       {scores.seo?.details?.content_metrics && (
         <div className="metrics-dashboard">
           <h3>
-            📊 Content Metrics 
+            Content Metrics 
             <Tooltip text="Key metrics about your content length and structure">
-              <span className="info-icon">ℹ️</span>
+              <span className="info-icon">i</span>
             </Tooltip>
           </h3>
           <div className="metrics-grid">
             <Tooltip text="Total word count - aim for 800-2000 words for SEO">
               <div className="metric-card">
-                <div className="metric-icon">📝</div>
+                <div className="metric-icon">W</div>
                 <div className="metric-value">{scores.seo.details.content_metrics.word_count}</div>
                 <div className="metric-label">Words</div>
               </div>
             </Tooltip>
             <Tooltip text="Average reading time based on 200 words/minute">
               <div className="metric-card">
-                <div className="metric-icon">⏱️</div>
+                <div className="metric-icon">T</div>
                 <div className="metric-value">{scores.seo.details.content_metrics.reading_time_minutes}</div>
                 <div className="metric-label">Min Read</div>
               </div>
             </Tooltip>
             <Tooltip text="Number of paragraphs - helps with content structure">
               <div className="metric-card">
-                <div className="metric-icon">📄</div>
+                <div className="metric-icon">P</div>
                 <div className="metric-value">{scores.seo.details.content_metrics.paragraph_count}</div>
                 <div className="metric-label">Paragraphs</div>
               </div>
             </Tooltip>
             <Tooltip text="Total character count including spaces">
               <div className="metric-card">
-                <div className="metric-icon">🔤</div>
+                <div className="metric-icon">C</div>
                 <div className="metric-value">{scores.seo.details.content_metrics.character_count}</div>
                 <div className="metric-label">Characters</div>
               </div>
@@ -365,7 +365,7 @@ export default function ResultsDashboard({ results }) {
 
       {/* Performance Comparison */}
       <div className="benchmark-section">
-        <h3>📈 Performance vs Industry Standards</h3>
+        <h3>Performance vs Industry Standards</h3>
         <div className="benchmark-grid">
           <div className="benchmark-item">
             <div className="benchmark-label">SEO Optimization</div>
@@ -378,7 +378,7 @@ export default function ResultsDashboard({ results }) {
               </div>
             </div>
             <div className="benchmark-insight">
-              {scores.seo.score >= 70 ? '✅ Above average' : '⚠️ Below average - needs improvement'}
+              {scores.seo.score >= 70 ? 'Above average' : 'Below average - needs improvement'}
             </div>
           </div>
 
@@ -393,7 +393,7 @@ export default function ResultsDashboard({ results }) {
               </div>
             </div>
             <div className="benchmark-insight">
-              {scores.humanization.score >= 65 ? '✅ Sounds natural' : '⚠️ May sound AI-generated'}
+              {scores.humanization.score >= 65 ? 'Sounds natural' : 'May sound AI-generated'}
             </div>
           </div>
 
@@ -408,7 +408,7 @@ export default function ResultsDashboard({ results }) {
               </div>
             </div>
             <div className="benchmark-insight">
-              {scores.differentiation.score >= 60 ? '✅ Stands out from competition' : '⚠️ Too generic'}
+              {scores.differentiation.score >= 60 ? 'Stands out from competition' : 'Too generic'}
             </div>
           </div>
         </div>
@@ -418,7 +418,7 @@ export default function ResultsDashboard({ results }) {
       <div className="ai-rewrite-tool">
         <div className="tool-header">
           <div className="tool-title">
-            <h3>🤖 AI Content Rewriter</h3>
+            <h3>AI Content Rewriter</h3>
             <p className="tool-subtitle">Transform your content with AI-powered improvements</p>
           </div>
         </div>
@@ -433,7 +433,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Complete content rewrite addressing all issues"
             >
-              <span className="mode-icon">✨</span>
+              <span className="mode-icon">*</span>
               <span className="mode-name">Full Rewrite</span>
               <span className="mode-desc">Fix all issues</span>
             </button>
@@ -444,7 +444,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Optimize for search engines and keywords"
             >
-              <span className="mode-icon">🎯</span>
+              <span className="mode-icon">⊕</span>
               <span className="mode-name">SEO Optimize</span>
               <span className="mode-desc">Better keywords</span>
             </button>
@@ -455,7 +455,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Make content sound more natural and human"
             >
-              <span className="mode-icon">👤</span>
+              <span className="mode-icon">H</span>
               <span className="mode-name">Humanize</span>
               <span className="mode-desc">Natural tone</span>
             </button>
@@ -466,7 +466,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Simplify language and improve clarity"
             >
-              <span className="mode-icon">📖</span>
+              <span className="mode-icon">R</span>
               <span className="mode-name">Readability</span>
               <span className="mode-desc">Easier to read</span>
             </button>
@@ -477,7 +477,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Make content more engaging and compelling"
             >
-              <span className="mode-icon">🔥</span>
+              <span className="mode-icon">E</span>
               <span className="mode-name">Engagement</span>
               <span className="mode-desc">More engaging</span>
             </button>
@@ -488,7 +488,7 @@ export default function ResultsDashboard({ results }) {
               disabled={aiImproving}
               title="Generate optimized meta description"
             >
-              <span className="mode-icon">📝</span>
+              <span className="mode-icon">M</span>
               <span className="mode-name">Meta Description</span>
               <span className="mode-desc">Perfect meta</span>
             </button>
@@ -499,7 +499,7 @@ export default function ResultsDashboard({ results }) {
         {aiImproving && (
           <div className="ai-loading-state">
             <div className="loading-spinner"></div>
-            <p>🤖 AI is analyzing and rewriting your content...</p>
+            <p>AI is analyzing and rewriting your content...</p>
             <div className="loading-bar">
               <div className="loading-progress"></div>
             </div>
@@ -511,14 +511,14 @@ export default function ResultsDashboard({ results }) {
           <div className="ai-result-container">
             {improvedContent.content.error ? (
               <div className="error-panel">
-                <div className="error-icon">⚠️</div>
+                <div className="error-icon">!</div>
                 <h4>Error Occurred</h4>
                 <p>{improvedContent.content.error}</p>
                 <button 
                   className="retry-btn"
                   onClick={() => handleAIRewrite(improvedContent.type)}
                 >
-                  🔄 Retry
+                  Retry
                 </button>
               </div>
             ) : (
@@ -536,19 +536,19 @@ export default function ResultsDashboard({ results }) {
                       onClick={() => handleAIRewrite(improvedContent.type)}
                       title="Regenerate with different variation"
                     >
-                      🔄 Regenerate
+                      Regenerate
                     </button>
                     <button 
                       className="action-icon-btn"
                       onClick={() => {
                         const content = improvedContent.content.improved_content || improvedContent.content.improved_meta || improvedContent.content.improved_paragraph || ''
                         navigator.clipboard.writeText(content)
-                        setCopyButtonText('✓ Copied!')
-                        setTimeout(() => setCopyButtonText('📋 Copy'), 2000)
+                        setCopyButtonText('Copied!')
+                        setTimeout(() => setCopyButtonText('Copy'), 2000)
                       }}
                       title="Copy to clipboard"
                     >
-                      {copyButtonText || '📋 Copy'}
+                      {copyButtonText || 'Copy'}
                     </button>
                   </div>
                 </div>
@@ -558,7 +558,7 @@ export default function ResultsDashboard({ results }) {
                   <div className="comparison-view">
                     <div className="comparison-column original-column">
                       <div className="column-header">
-                        <h5>📄 Original Content</h5>
+                        <h5>Original Content</h5>
                         <span className="word-count">{improvedContent.original?.split(' ').length || 0} words</span>
                       </div>
                       <div className="content-box original-content">
@@ -572,7 +572,7 @@ export default function ResultsDashboard({ results }) {
                     
                     <div className="comparison-column improved-column">
                       <div className="column-header">
-                        <h5>✨ Improved Content</h5>
+                        <h5>Improved Content</h5>
                         <span className="word-count">{improvedContent.content.improved_content.split(' ').length || 0} words</span>
                       </div>
                       <div className="content-box improved-content">
@@ -586,14 +586,14 @@ export default function ResultsDashboard({ results }) {
                 {improvedContent.content.improved_meta && (
                   <div className="meta-result">
                     <div className="meta-preview">
-                      <h5>📝 Generated Meta Description</h5>
+                      <h5>Generated Meta Description</h5>
                       <div className="meta-box">
                         {improvedContent.content.improved_meta}
                       </div>
                       <div className="meta-stats">
                         <span className={improvedContent.content.improved_meta.length >= 150 && improvedContent.content.improved_meta.length <= 160 ? 'stat-good' : 'stat-warning'}>
                           {improvedContent.content.improved_meta.length} characters
-                          {improvedContent.content.improved_meta.length >= 150 && improvedContent.content.improved_meta.length <= 160 ? ' ✓ Perfect length' : ' ⚠️ Should be 150-160'}
+                          {improvedContent.content.improved_meta.length >= 150 && improvedContent.content.improved_meta.length <= 160 ? ' Perfect length' : ' Should be 150-160'}
                         </span>
                       </div>
                     </div>
@@ -603,7 +603,7 @@ export default function ResultsDashboard({ results }) {
                 {/* Changes Summary */}
                 {improvedContent.content.changes_made && (
                   <div className="changes-summary">
-                    <h5>📊 Changes Made:</h5>
+                    <h5>Changes Made:</h5>
                     <ul>
                       {improvedContent.content.changes_made.map((change, i) => (
                         <li key={i}>✓ {change}</li>
@@ -618,17 +618,17 @@ export default function ResultsDashboard({ results }) {
                     className="action-btn secondary"
                     onClick={() => setImprovedContent(null)}
                   >
-                    ✕ Close
+                    Close
                   </button>
                   <button 
                     className="action-btn primary"
                     onClick={() => {
                       const content = improvedContent.content.improved_content || improvedContent.content.improved_meta || ''
                       navigator.clipboard.writeText(content)
-                      alert('✓ Content copied! You can now paste it into your editor.')
+                      alert('Content copied! You can now paste it into your editor.')
                     }}
                   >
-                    📋 Copy & Use Content
+                    Copy & Use Content
                   </button>
                 </div>
               </>
@@ -640,7 +640,7 @@ export default function ResultsDashboard({ results }) {
       {/* Enhanced AI Rank Simulator - Signature Feature */}
       {scores.serp?.details?.ranking_prediction && (
         <div className="rank-simulator-enhanced">
-          <h3>🚀 AI Predictive Rank Simulator</h3>
+          <h3>AI Predictive Rank Simulator</h3>
           <p className="simulator-subtitle">See exactly how your content will rank after fixes</p>
           
           <div className="rank-jump-visualization">
@@ -679,10 +679,10 @@ export default function ResultsDashboard({ results }) {
           </div>
           <p className="rank-impact">
             {scores.serp.details.ranking_prediction.with_improvements?.current_position <= 10 
-              ? '🎯 Page 1 Potential!' 
+              ? 'Page 1 Potential!' 
               : scores.serp.details.ranking_prediction.with_improvements?.current_position <= 20
-              ? '📈 Top 20 Achievable'
-              : '⚡ Significant Improvement Possible'}
+              ? 'Top 20 Achievable'
+              : 'Significant Improvement Possible'}
           </p>
         </div>
       )}
@@ -690,44 +690,44 @@ export default function ResultsDashboard({ results }) {
       {/* Competitor Fingerprint - Another Signature Feature */}
       {scores.serp?.details?.serp_data?.patterns && (
         <div className="competitor-fingerprint">
-          <h3>🔍 Competitor Intelligence Map</h3>
+          <h3>Competitor Intelligence Map</h3>
           <p className="fingerprint-subtitle">What top 10 SERP leaders are doing</p>
           
           <div className="fingerprint-grid">
             <div className="fingerprint-card">
-              <div className="fingerprint-icon">📊</div>
+              <div className="fingerprint-icon">D</div>
               <div className="fingerprint-stat">{scores.serp.details.serp_data.patterns.has_stats}%</div>
               <div className="fingerprint-label">Include Data/Stats</div>
             </div>
             
             <div className="fingerprint-card">
-              <div className="fingerprint-icon">📚</div>
+              <div className="fingerprint-icon">B</div>
               <div className="fingerprint-stat">{scores.serp.details.serp_data.patterns.has_examples}%</div>
               <div className="fingerprint-label">Use Case Studies</div>
             </div>
             
             <div className="fingerprint-card">
-              <div className="fingerprint-icon">⚖️</div>
+              <div className="fingerprint-icon">=</div>
               <div className="fingerprint-stat">{scores.serp.details.serp_data.patterns.has_comparisons}%</div>
               <div className="fingerprint-label">Have Comparisons</div>
             </div>
             
             <div className="fingerprint-card">
-              <div className="fingerprint-icon">📝</div>
+              <div className="fingerprint-icon">L</div>
               <div className="fingerprint-stat">{scores.serp.details.serp_data.patterns.has_lists}%</div>
               <div className="fingerprint-label">Use Lists/Bullets</div>
             </div>
           </div>
           
           <div className="fingerprint-insight">
-            💡 <strong>Key Insight:</strong> Top rankers average {scores.serp.details.serp_data.patterns.avg_stats || 6} data points per article
+            <strong>Key Insight:</strong> Top rankers average {scores.serp.details.serp_data.patterns.avg_stats || 6} data points per article
           </div>
         </div>
       )}
 
       {results.rank_prediction && (
         <div className="rank-simulator">
-          <h3>📈 AI Rank Prediction</h3>
+          <h3>AI Rank Prediction</h3>
           <div className="rank-comparison">
             <div className="rank-box current">
               <span>Current Estimate</span>
@@ -744,16 +744,16 @@ export default function ResultsDashboard({ results }) {
       )}
 
       <div className="scores-grid">
-        <ScoreCard title="SEO Score" data={scores.seo} emoji="🔍" />
-        <ScoreCard title="SERP Performance" data={scores.serp} emoji="📊" />
-        <ScoreCard title="AEO Score" data={scores.aeo} emoji="🤖" />
-        <ScoreCard title="Humanization" data={scores.humanization} emoji="👤" />
-        <ScoreCard title="Differentiation" data={scores.differentiation} emoji="💎" />
+        <ScoreCard title="SEO Score" data={scores.seo} />
+        <ScoreCard title="SERP Performance" data={scores.serp} />
+        <ScoreCard title="AEO Score" data={scores.aeo} />
+        <ScoreCard title="Humanization" data={scores.humanization} />
+        <ScoreCard title="Differentiation" data={scores.differentiation} />
       </div>
 
       {scores.humanization.details?.heatmap && (
         <div className="heatmap-section">
-          <h3>🌡️ Humanization Heatmap</h3>
+          <h3>Humanization Heatmap</h3>
           <p>Red = AI-like patterns | Green = Human-like</p>
           {scores.humanization.details.heatmap.slice(0, 5).map((item, i) => (
             <div 

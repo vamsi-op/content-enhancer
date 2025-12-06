@@ -1,4 +1,4 @@
-# 🎯 Content Quality Audit Tool
+# Content Quality Audit Tool
 
 > AI-powered content analysis tool that scores content across 5 critical dimensions with real-time SERP analysis and intelligent recommendations.
 
@@ -9,9 +9,9 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 📊 Comprehensive Content Analysis
+### Comprehensive Content Analysis
 
 - **SEO Score** - Keyword density, readability, meta tags, and header structure
 - **SERP Performance** - Real-time comparison with top 10 Google results
@@ -19,7 +19,7 @@
 - **Humanization Score** - Detects AI-generated patterns with visual heatmap
 - **Differentiation Score** - Measures uniqueness against competitors
 
-### 🚀 Unique Capabilities
+### Unique Capabilities
 
 - **AI Rank Simulator** - Predicts ranking improvement (e.g., Rank #27 → #9)
 - **Competitor Intelligence** - Analyzes top 10 SERP patterns and content strategies
@@ -30,7 +30,7 @@
 
 ---
 
-## 🎥 Demo
+## Demo
 
 **Live Site:** [https://content-enhancer.vercel.app](https://content-enhancer.vercel.app)
 
@@ -42,7 +42,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend**
 - React 18 + Vite
@@ -59,17 +59,10 @@
 - Vercel (Serverless)
 - Auto-scaling, CDN, HTTPS
 
----
-
-
-### Environment Variables
-
-Add to Vercel dashboard:
-- `OPENAI_API_KEY` - Your OpenAI API key (for AI rewrite features)
 
 ---
 
-## 💻 Local Development
+## Local Development
 
 ### Prerequisites
 - Python 3.9+
@@ -104,7 +97,7 @@ Frontend runs on `http://localhost:5173`
 
 ---
 
-## 📖 Usage Examples
+## Usage Examples
 
 ### Analyze a Blog Post
 
@@ -130,7 +123,7 @@ Result: Full analysis with SERP comparison
 
 ---
 
-## 🎨 Key Features Explained
+## Key Features Explained
 
 ### AI Rank Simulator
 Visual prediction showing how fixing identified issues could improve search rankings.
@@ -142,8 +135,8 @@ Visual prediction showing how fixing identified issues could improve search rank
 
 ### Humanization Heatmap
 Color-coded sentences:
-- 🟢 Green = Natural, human-like
-- 🔴 Red = AI-generated patterns detected
+- Green = Natural, human-like
+- Red = AI-generated patterns detected
 
 ### AI Content Rewriter
 Multiple rewrite modes:
@@ -156,7 +149,7 @@ Multiple rewrite modes:
 
 ---
 
-## 📊 Scoring Methodology
+## Scoring Methodology
 
 Each dimension scored 0-100:
 - **SEO**: Keywords, readability (Flesch-Kincaid), headers, meta tags
@@ -169,7 +162,7 @@ Each dimension scored 0-100:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Please feel free to submit a Pull Request.
 
@@ -181,13 +174,13 @@ Contributions welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built for Buildathon - AI for Vizag
 - Powered by OpenAI API
@@ -195,7 +188,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📧 Contact
+## Contact
 
 **Project Link:** [https://github.com/vamsi-op/content-enhancer](https://github.com/vamsi-op/content-enhancer)
 
@@ -203,4 +196,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-<p align="center">Made with ❤️ for content creators</p>
+<p align="center">Made with care for content creators</p>
