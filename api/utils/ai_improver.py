@@ -1,19 +1,104 @@
 import os
-from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class AIContentImprover:
-    """Use OpenAI to generate content improvements"""
+    """Use AI providers (Groq, Gemini, or OpenAI) to generate content improvements"""
     
     def __init__(self):
-        api_key = os.getenv('OPENAI_API_KEY')
+        self.client = None
+        self.provider = None
+        
+        # Try Groq first (FREE - fastest)
+        groq_key = os.getenv('GROQ_API_KEY')
+        if groq_key:
+            try:
+                from groq import Groq
+                self.client = Groq(api_key=groq_key)
+                self.provider = 'groq'
+                print("✓ Using Groq AI (Free & Fast)")
+                return
+            except Exception as e:
+                print(f"Groq initialization failed: {e}")
+        
+        # Try Google Gemini (FREE tier available)
+        gemini_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
+        if gemini_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=gemini_key)
+                self.client = genai.GenerativeModel('gemini-pro')
+                self.provider = 'gemini'
+                print("✓ Using Google Gemini (Free tier)")
+                return
+            except Exception as e:
+                print(f"Gemini initialization failed: {e}")
+        
+        # Fallback to OpenAI (Paid)
+        openai_key = os.getenv('OPENAI_API_KEY')
+        if openai_key:
+            try:
+                from openai import OpenAI
+                self.client = OpenAI(api_key=openai_key)
+                self.provider = 'openai'
+                print("✓ Using OpenAI (Paid)")
+                return
+            except Exception as e:
+                print(f"OpenAI initialization failed: {e}")
+        
+        print("⚠ No AI provider configured. Set GROQ_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY")
+    
+    def _call_ai(self, prompt, system_message="You are an expert content writer.", temperature=0.7, max_tokens=2500):
+        """Universal AI caller that works with all providers"""
+        if not self.client:
+            return None
+        
         try:
-            self.client = OpenAI(api_key=api_key) if api_key else None
+            if self.provider == 'groq':
+                response = self.client.chat.completions.create(
+                    model="llama-3.1-70b-versatile",  # Free, fast, high-quality
+                    messages=[
+                        {"role": "system", "content": system_message},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=temperature,
+                    max_tokens=max_tokens
+                )
+                return response.choices[0].message.content
+                
+            elif self.provider == 'gemini':
+                full_prompt = f"{system_message}\n\n{prompt}"
+                response = self.client.generate_content(
+                    full_prompt,
+                    generation_config={
+                        'temperature': temperature,
+                        'max_output_tokens': max_tokens
+                    }
+                )
+                return response.text
+                
+            elif self.provider == 'openai':
+                response = self.client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": system_message},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=temperature,
+                    max_tokens=max_tokens
+                )
+                return response.choices[0].message.content
+                
         except Exception as e:
-            print(f"OpenAI client initialization error: {e}")
-            self.client = None
+            error_msg = str(e)
+            if '401' in error_msg or 'not_authorized' in error_msg:
+                raise Exception(f'Invalid {self.provider.upper()} API key. Please check your credentials.')
+            elif 'quota' in error_msg.lower() or 'rate_limit' in error_msg.lower():
+                raise Exception(f'{self.provider.upper()} quota/rate limit exceeded. Try again later.')
+            raise e
+        
+        return None
     
     def generate_fixes(self, text, analysis_results):
         """
@@ -23,24 +108,20 @@ class AIContentImprover:
         if not self.client:
             return {
                 'success': False,
-                'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'
+                'error': 'AI features require an API key. Get FREE keys from: https://console.groq.com or https://makersuite.google.com/app/apikey'
             }
         
         try:
-            # Build improvement prompt from analysis
             prompt = self._build_improvement_prompt(text, analysis_results)
-            
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an expert SEO and content strategist. Improve content based on specific feedback."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=2000
+            improved_content = self._call_ai(
+                prompt,
+                "You are an expert SEO and content strategist. Improve content based on specific feedback.",
+                0.7,
+                2000
             )
             
-            improved_content = response.choices[0].message.content
+            if not improved_content:
+                raise Exception("AI provider returned no content")
             
             return {
                 'success': True,
@@ -50,13 +131,12 @@ class AIContentImprover:
             
         except Exception as e:
             error_msg = str(e)
-            # Better error message for common OpenAI errors
             if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
-                error_msg = 'Invalid or expired OpenAI API key. Please update your API key in the environment settings.'
+                error_msg = f'Invalid API key. Get a FREE key from: https://console.groq.com (Groq) or https://makersuite.google.com/app/apikey (Gemini)'
             elif 'quota' in error_msg.lower():
-                error_msg = 'OpenAI API quota exceeded. Please check your OpenAI account billing.'
+                error_msg = 'API quota exceeded. Try switching to a different provider or wait a moment.'
             elif 'rate_limit' in error_msg.lower():
-                error_msg = 'OpenAI API rate limit reached. Please try again in a moment.'
+                error_msg = 'Rate limit reached. Please try again in a moment.'
             
             return {
                 'success': False,
@@ -203,7 +283,7 @@ Please rewrite focusing on fixing these issues while maintaining the core messag
     def rewrite_for_seo(self, text, target_keyword, analysis):
         """SEO-focused content rewrite"""
         if not self.client:
-            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
+            return {'success': False, 'error': 'Get a FREE API key from: https://console.groq.com or https://makersuite.google.com/app/apikey'}
         
         try:
             prompt = f"""Rewrite this content to be SEO-optimized for the keyword: "{target_keyword}"
@@ -220,17 +300,15 @@ Original Content:
 
 SEO-Optimized Version:"""
 
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an expert SEO content writer. Optimize content for search engines while keeping it natural and engaging."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=2500
+            improved = self._call_ai(
+                prompt,
+                "You are an expert SEO content writer. Optimize content for search engines while keeping it natural and engaging.",
+                0.7,
+                2500
             )
             
-            improved = response.choices[0].message.content
+            if not improved:
+                raise Exception("AI returned no content")
             
             return {
                 'success': True,
@@ -245,15 +323,13 @@ SEO-Optimized Version:"""
         except Exception as e:
             error_msg = str(e)
             if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
-                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
-            elif 'quota' in error_msg.lower():
-                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
+                error_msg = 'Invalid API key. Get FREE key: https://console.groq.com'
             return {'success': False, 'error': error_msg}
     
     def humanize_content(self, text):
         """Make content sound more human and natural"""
         if not self.client:
-            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
+            return {'success': False, 'error': 'Get a FREE API key from: https://console.groq.com'}
         
         try:
             prompt = f"""Rewrite this content to sound more human, natural, and conversational.
@@ -271,17 +347,15 @@ Original Content:
 
 Humanized Version:"""
 
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an expert content writer who excels at making text sound natural and human. Avoid AI-like patterns."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.8,
-                max_tokens=2500
+            improved = self._call_ai(
+                prompt,
+                "You are an expert content writer who excels at making text sound natural and human. Avoid AI-like patterns.",
+                0.8,
+                2500
             )
             
-            improved = response.choices[0].message.content
+            if not improved:
+                raise Exception("AI returned no content")
             
             return {
                 'success': True,
@@ -294,17 +368,12 @@ Humanized Version:"""
                 ]
             }
         except Exception as e:
-            error_msg = str(e)
-            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
-                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
-            elif 'quota' in error_msg.lower():
-                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
-            return {'success': False, 'error': error_msg}
+            return {'success': False, 'error': str(e)}
     
     def improve_readability(self, text):
         """Simplify content for better readability"""
         if not self.client:
-            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
+            return {'success': False, 'error': 'Get a FREE API key from: https://console.groq.com'}
         
         try:
             prompt = f"""Rewrite this content to be easier to read and understand.
@@ -322,17 +391,15 @@ Original Content:
 
 Simplified Version:"""
 
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an expert at simplifying complex content. Make text clear, concise, and easy to understand."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.6,
-                max_tokens=2500
+            improved = self._call_ai(
+                prompt,
+                "You are an expert at simplifying complex content. Make text clear, concise, and easy to understand.",
+                0.6,
+                2500
             )
             
-            improved = response.choices[0].message.content
+            if not improved:
+                raise Exception("AI returned no content")
             
             return {
                 'success': True,
@@ -345,17 +412,12 @@ Simplified Version:"""
                 ]
             }
         except Exception as e:
-            error_msg = str(e)
-            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
-                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
-            elif 'quota' in error_msg.lower():
-                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
-            return {'success': False, 'error': error_msg}
+            return {'success': False, 'error': str(e)}
     
     def boost_engagement(self, text):
         """Make content more engaging and compelling"""
         if not self.client:
-            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
+            return {'success': False, 'error': 'Get a FREE API key from: https://console.groq.com'}
         
         try:
             prompt = f"""Rewrite this content to be more engaging, compelling, and captivating.
@@ -374,17 +436,15 @@ Original Content:
 
 Engaging Version:"""
 
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an expert copywriter who creates compelling, engaging content that captures attention and drives action."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.8,
-                max_tokens=2500
+            improved = self._call_ai(
+                prompt,
+                "You are an expert copywriter who creates compelling, engaging content that captures attention and drives action.",
+                0.8,
+                2500
             )
             
-            improved = response.choices[0].message.content
+            if not improved:
+                raise Exception("AI returned no content")
             
             return {
                 'success': True,
@@ -397,9 +457,4 @@ Engaging Version:"""
                 ]
             }
         except Exception as e:
-            error_msg = str(e)
-            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
-                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
-            elif 'quota' in error_msg.lower():
-                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
-            return {'success': False, 'error': error_msg}
+            return {'success': False, 'error': str(e)}
