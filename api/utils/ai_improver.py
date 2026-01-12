@@ -48,7 +48,7 @@ class AIContentImprover:
                 try:
                     import google.generativeai as genai
                     genai.configure(api_key=gemini_key)
-                    self.client = genai.GenerativeModel('gemini-pro')
+                    self.client = genai.GenerativeModel('gemini-1.5-flash')  # Updated model name
                     self.provider = 'gemini'
                     print("✓ Using Google Gemini (Free tier)")
                     return
