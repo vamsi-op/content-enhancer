@@ -48,10 +48,23 @@ class AIContentImprover:
                 try:
                     import google.generativeai as genai
                     genai.configure(api_key=gemini_key)
-                    self.client = genai.GenerativeModel('gemini-1.5-flash')  # Updated model name
-                    self.provider = 'gemini'
-                    print("✓ Using Google Gemini (Free tier)")
-                    return
+                    
+                    # Try different model names (API versions change frequently)
+                    models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'models/gemini-pro']
+                    for model_name in models_to_try:
+                        try:
+                            self.client = genai.GenerativeModel(model_name)
+                            # Test it works
+                            test = self.client.generate_content("Hi", generation_config={'max_output_tokens': 5})
+                            self.provider = 'gemini'
+                            print(f"✓ Using Google Gemini ({model_name})")
+                            return
+                        except Exception as model_err:
+                            continue
+                    
+                    # If all models failed
+                    self.init_errors.append("Gemini: No available model found. Try Groq instead.")
+                    
                 except ImportError:
                     self.init_errors.append("Gemini library not installed. Run: pip install google-generativeai")
                 except Exception as e:
