@@ -97,7 +97,7 @@ class AIContentImprover:
         try:
             if self.provider == 'groq':
                 response = self.client.chat.completions.create(
-                    model="llama-3.1-70b-versatile",  # Free, fast, high-quality
+                    model="llama-3.3-70b-versatile",  # Updated model (Jan 2026)
                     messages=[
                         {"role": "system", "content": system_message},
                         {"role": "user", "content": prompt}
