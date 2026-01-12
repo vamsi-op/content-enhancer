@@ -13,46 +13,65 @@ class AIContentImprover:
         
         # Try Groq first (FREE - fastest)
         groq_key = os.getenv('GROQ_API_KEY')
-        if groq_key and groq_key.strip():
-            try:
-                from groq import Groq
-                self.client = Groq(api_key=groq_key)
-                self.provider = 'groq'
-                print("✓ Using Groq AI (Free & Fast)")
-                return
-            except ImportError:
-                self.init_errors.append("Groq library not installed. Run: pip install groq")
-            except Exception as e:
-                self.init_errors.append(f"Groq failed: {str(e)[:100]}")
+        if groq_key:
+            groq_key = groq_key.strip()  # Remove whitespace
+            if groq_key:
+                try:
+                    from groq import Groq
+                    # Validate key format
+                    if not groq_key.startswith('gsk_'):
+                        self.init_errors.append(f"Groq key format invalid (should start with 'gsk_'). Current: {groq_key[:10]}...")
+                    else:
+                        self.client = Groq(api_key=groq_key)
+                        # Test with a simple call
+                        try:
+                            test = self.client.chat.completions.create(
+                                model="llama-3.1-70b-versatile",
+                                messages=[{"role": "user", "content": "hi"}],
+                                max_tokens=5
+                            )
+                            self.provider = 'groq'
+                            print("✓ Using Groq AI (Free & Fast)")
+                            return
+                        except Exception as test_err:
+                            self.init_errors.append(f"Groq API test failed: {str(test_err)[:150]}")
+                except ImportError:
+                    self.init_errors.append("Groq library not installed. Run: pip install groq")
+                except Exception as e:
+                    self.init_errors.append(f"Groq failed: {str(e)[:150]}")
         
         # Try Google Gemini (FREE tier available)
         gemini_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-        if gemini_key and gemini_key.strip():
-            try:
-                import google.generativeai as genai
-                genai.configure(api_key=gemini_key)
-                self.client = genai.GenerativeModel('gemini-pro')
-                self.provider = 'gemini'
-                print("✓ Using Google Gemini (Free tier)")
-                return
-            except ImportError:
-                self.init_errors.append("Gemini library not installed. Run: pip install google-generativeai")
-            except Exception as e:
-                self.init_errors.append(f"Gemini failed: {str(e)[:100]}")
+        if gemini_key:
+            gemini_key = gemini_key.strip()  # Remove whitespace
+            if gemini_key:
+                try:
+                    import google.generativeai as genai
+                    genai.configure(api_key=gemini_key)
+                    self.client = genai.GenerativeModel('gemini-pro')
+                    self.provider = 'gemini'
+                    print("✓ Using Google Gemini (Free tier)")
+                    return
+                except ImportError:
+                    self.init_errors.append("Gemini library not installed. Run: pip install google-generativeai")
+                except Exception as e:
+                    self.init_errors.append(f"Gemini failed: {str(e)[:150]}")
         
         # Fallback to OpenAI (Paid)
         openai_key = os.getenv('OPENAI_API_KEY')
-        if openai_key and openai_key.strip():
-            try:
-                from openai import OpenAI
-                self.client = OpenAI(api_key=openai_key)
-                self.provider = 'openai'
-                print("✓ Using OpenAI (Paid)")
-                return
-            except ImportError:
-                self.init_errors.append("OpenAI library not installed. Run: pip install openai")
-            except Exception as e:
-                self.init_errors.append(f"OpenAI failed: {str(e)[:100]}")
+        if openai_key:
+            openai_key = openai_key.strip()  # Remove whitespace
+            if openai_key:
+                try:
+                    from openai import OpenAI
+                    self.client = OpenAI(api_key=openai_key)
+                    self.provider = 'openai'
+                    print("✓ Using OpenAI (Paid)")
+                    return
+                except ImportError:
+                    self.init_errors.append("OpenAI library not installed. Run: pip install openai")
+                except Exception as e:
+                    self.init_errors.append(f"OpenAI failed: {str(e)[:150]}")
         
         print("⚠ No AI provider configured")
         if self.init_errors:
