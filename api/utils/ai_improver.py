@@ -196,8 +196,7 @@ class AIContentImprover:
         if not self.client:
             return None
         
-        try:
-            prompt = f"""Write a compelling meta description (150-160 characters) for this content:
+        prompt = f"""Write a compelling meta description (150-160 characters) for this content:
 
 Title: {title}
 Target Keyword: {target_keyword}
@@ -207,86 +206,81 @@ Requirements:
 - Exactly 150-160 characters
 - Include target keyword naturally
 - Compelling and click-worthy
-- Accurate summary of content"""
+- Accurate summary of content
 
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=100
-            )
-            
-            return response.choices[0].message.content.strip('"')
-            
-        except:
-            return None
+Return ONLY the meta description text, no quotes or extra formatting."""
+
+        result = self._call_ai(
+            prompt=prompt,
+            system_message="You are an SEO expert specializing in meta descriptions.",
+            temperature=0.7,
+            max_tokens=100
+        )
+        
+        if result:
+            return result.strip().strip('"').strip("'")
+        return None
     
     def suggest_subtopics(self, keyword, serp_data):
         """Suggest missing subtopics based on SERP analysis"""
         if not self.client:
             return []
         
-        try:
-            competitor_info = ""
-            if serp_data and 'patterns' in serp_data:
-                competitor_info = f"""
+        competitor_info = ""
+        if serp_data and 'patterns' in serp_data:
+            competitor_info = f"""
 Competitor patterns:
 - {serp_data['patterns'].get('has_stats', 0)}% include statistics
 - {serp_data['patterns'].get('has_examples', 0)}% use case studies
 - {serp_data['patterns'].get('has_comparisons', 0)}% have comparisons
 """
-            
-            prompt = f"""For the keyword "{keyword}", suggest 5-7 subtopics that top-ranking content should cover.
+        
+        prompt = f"""For the keyword "{keyword}", suggest 5-7 subtopics that top-ranking content should cover.
 
 {competitor_info}
 
 Return as a numbered list of subtopics, each 3-6 words."""
 
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=200
-            )
-            
-            subtopics = response.choices[0].message.content.strip().split('\n')
+        result = self._call_ai(
+            prompt=prompt,
+            system_message="You are an SEO content strategist.",
+            temperature=0.7,
+            max_tokens=200
+        )
+        
+        if result:
+            subtopics = result.strip().split('\n')
             return [s.strip() for s in subtopics if s.strip()]
-            
-        except:
-            return []
+        return []
     
     def rewrite_paragraph(self, paragraph, issue_type):
         """Rewrite a specific paragraph to fix issues"""
         if not self.client:
             return paragraph
         
-        try:
-            instructions = {
-                'humanization': 'Make this sound more natural and conversational. Vary sentence structure and length. Remove AI-like patterns.',
-                'readability': 'Simplify this paragraph. Use shorter sentences and simpler words. Improve readability.',
-                'keyword': 'Rewrite this to naturally include the target keyword 2-3 times without keyword stuffing.',
-                'engagement': 'Make this more engaging. Add a question or hook. Make it more compelling.'
-            }
-            
-            instruction = instructions.get(issue_type, 'Improve this paragraph')
-            
-            prompt = f"""{instruction}
+        instructions = {
+            'humanization': 'Make this sound more natural and conversational. Vary sentence structure and length. Remove AI-like patterns.',
+            'readability': 'Simplify this paragraph. Use shorter sentences and simpler words. Improve readability.',
+            'keyword': 'Rewrite this to naturally include the target keyword 2-3 times without keyword stuffing.',
+            'engagement': 'Make this more engaging. Add a question or hook. Make it more compelling.'
+        }
+        
+        instruction = instructions.get(issue_type, 'Improve this paragraph')
+        
+        prompt = f"""{instruction}
 
 Original: {paragraph}
 
 Rewritten (same meaning, improved style):"""
 
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=300
-            )
-            
-            return response.choices[0].message.content.strip()
-            
-        except:
-            return paragraph
+        result = self._call_ai(
+            prompt=prompt,
+            system_message="You are an expert content editor.",
+            temperature=0.7,
+            max_tokens=300
+        )
+        
+        return result.strip() if result else paragraph
     
     def _build_improvement_prompt(self, text, analysis):
         """Build comprehensive improvement prompt"""
