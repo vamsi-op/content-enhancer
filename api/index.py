@@ -52,32 +52,37 @@ def health_check():
 def ai_status():
     """Debug endpoint to check AI provider configuration"""
     try:
+        # Check ALL env vars that might contain API keys
+        all_env_keys = {k: 'SET' for k in os.environ.keys() if any(x in k.upper() for x in ['API', 'KEY', 'GROQ', 'GROK', 'GEMINI', 'GOOGLE', 'OPENAI'])}
+        
         from utils.ai_improver import AIContentImprover
         ai = AIContentImprover()
         
         env_keys = {
-            'groq': 'set' if os.getenv('GROQ_API_KEY') else 'not set',
-            'gemini': 'set' if os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY') else 'not set',
-            'openai': 'set' if os.getenv('OPENAI_API_KEY') else 'not set'
+            'GROQ_API_KEY': 'set' if os.getenv('GROQ_API_KEY') else 'not set',
+            'GEMINI_API_KEY': 'set' if os.getenv('GEMINI_API_KEY') else 'not set',
+            'GOOGLE_API_KEY': 'set' if os.getenv('GOOGLE_API_KEY') else 'not set',
+            'OPENAI_API_KEY': 'set' if os.getenv('OPENAI_API_KEY') else 'not set',
         }
         
         # Show first/last 4 chars of keys for debugging (safe)
         key_previews = {}
-        if os.getenv('GROQ_API_KEY'):
-            key = os.getenv('GROQ_API_KEY')
-            key_previews['groq'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
-        if os.getenv('GEMINI_API_KEY'):
-            key = os.getenv('GEMINI_API_KEY')
-            key_previews['gemini'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
-        if os.getenv('OPENAI_API_KEY'):
-            key = os.getenv('OPENAI_API_KEY')
-            key_previews['openai'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
+        for var_name in ['GROQ_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'OPENAI_API_KEY']:
+            key = os.getenv(var_name)
+            if key:
+                key = key.strip()
+                key_previews[var_name] = {
+                    'preview': f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short",
+                    'length': len(key),
+                    'starts_with': key[:4] if len(key) >= 4 else key
+                }
         
         return jsonify({
             'current_provider': ai.provider,
             'provider_initialized': ai.client is not None,
             'environment_keys': env_keys,
             'key_previews': key_previews,
+            'all_api_related_env_vars': list(all_env_keys.keys()),
             'initialization_errors': ai.init_errors if hasattr(ai, 'init_errors') else []
         })
     except Exception as e:

@@ -12,14 +12,15 @@ class AIContentImprover:
         self.init_errors = []
         
         # Try Groq first (FREE - fastest)
-        groq_key = os.getenv('GROQ_API_KEY')
+        # Also check for common typo: GROK_API_KEY
+        groq_key = os.getenv('GROQ_API_KEY') or os.getenv('GROK_API_KEY')
         if groq_key:
             groq_key = groq_key.strip()
             if groq_key:
                 try:
                     from groq import Groq
                     if not groq_key.startswith('gsk_'):
-                        self.init_errors.append(f"Invalid Groq key format (should start with 'gsk_')")
+                        self.init_errors.append(f"Invalid Groq key format (should start with 'gsk_', got: {groq_key[:10]}...)")
                     else:
                         self.client = Groq(api_key=groq_key)
                         self.provider = 'groq'
@@ -29,6 +30,8 @@ class AIContentImprover:
                     self.init_errors.append("Groq library not installed")
                 except Exception as e:
                     self.init_errors.append(f"Groq init error: {str(e)[:100]}")
+            else:
+                self.init_errors.append("GROQ_API_KEY is empty after stripping whitespace")
         
         # Try Google Gemini (FREE tier available)
         gemini_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
@@ -45,13 +48,16 @@ class AIContentImprover:
                             self.provider = 'gemini'
                             print(f"✓ Using Google Gemini ({model})")
                             return
-                        except:
+                        except Exception as model_err:
+                            self.init_errors.append(f"Gemini model {model} failed: {str(model_err)[:80]}")
                             continue
                     self.init_errors.append("Gemini: No working model found")
                 except ImportError:
                     self.init_errors.append("Gemini library not installed")
                 except Exception as e:
                     self.init_errors.append(f"Gemini init error: {str(e)[:100]}")
+            else:
+                self.init_errors.append("GEMINI_API_KEY is empty after stripping whitespace")
         
         # Fallback to OpenAI (Paid)
         openai_key = os.getenv('OPENAI_API_KEY')
