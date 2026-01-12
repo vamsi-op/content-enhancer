@@ -134,15 +134,17 @@ class AIContentImprover:
             error_msg = str(e)
             provider_name = self.provider.upper() if self.provider else "AI"
             
-            if '401' in error_msg or 'not_authorized' in error_msg or 'invalid' in error_msg.lower():
-                raise Exception(f'Invalid {provider_name} API key. Get a FREE key: https://console.groq.com (Groq) or https://makersuite.google.com/app/apikey (Gemini)')
-            elif 'quota' in error_msg.lower():
-                raise Exception(f'{provider_name} quota exceeded. Switch to FREE Groq: https://console.groq.com')
-            elif 'rate_limit' in error_msg.lower():
-                raise Exception(f'{provider_name} rate limit reached. Try again in a moment or use FREE Groq.')
-            elif 'api_key' in error_msg.lower():
-                raise Exception(f'{provider_name} API key issue. Get FREE key: https://console.groq.com')
-            raise e
+            # Show the ACTUAL error for debugging (at least first 300 chars)
+            actual_error = f"{provider_name} Error: {error_msg[:300]}"
+            
+            # Only show friendly messages for known error types
+            if '401' in error_msg and 'auth' in error_msg.lower():
+                raise Exception(f'{actual_error}\n\nTip: Check your API key at https://console.groq.com')
+            elif 'quota' in error_msg.lower() or 'limit' in error_msg.lower():
+                raise Exception(f'{actual_error}\n\nQuota/rate limit reached. Try again in a moment.')
+            else:
+                # For unknown errors, show the full error message
+                raise Exception(actual_error)
         
         return None
     
