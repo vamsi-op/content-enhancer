@@ -11,10 +11,8 @@ class AIContentImprover:
         api_key = os.getenv('OPENAI_API_KEY')
         try:
             self.client = OpenAI(api_key=api_key) if api_key else None
-        except TypeError as e:
-            # Handle version incompatibility
+        except Exception as e:
             print(f"OpenAI client initialization error: {e}")
-            print("Try: pip install --upgrade openai")
             self.client = None
     
     def generate_fixes(self, text, analysis_results):
@@ -25,7 +23,7 @@ class AIContentImprover:
         if not self.client:
             return {
                 'success': False,
-                'error': 'OpenAI API key not configured'
+                'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'
             }
         
         try:
@@ -51,9 +49,18 @@ class AIContentImprover:
             }
             
         except Exception as e:
+            error_msg = str(e)
+            # Better error message for common OpenAI errors
+            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
+                error_msg = 'Invalid or expired OpenAI API key. Please update your API key in the environment settings.'
+            elif 'quota' in error_msg.lower():
+                error_msg = 'OpenAI API quota exceeded. Please check your OpenAI account billing.'
+            elif 'rate_limit' in error_msg.lower():
+                error_msg = 'OpenAI API rate limit reached. Please try again in a moment.'
+            
             return {
                 'success': False,
-                'error': str(e)
+                'error': error_msg
             }
     
     def fix_meta_description(self, title, text, target_keyword=""):
@@ -196,7 +203,7 @@ Please rewrite focusing on fixing these issues while maintaining the core messag
     def rewrite_for_seo(self, text, target_keyword, analysis):
         """SEO-focused content rewrite"""
         if not self.client:
-            return {'success': False, 'error': 'OpenAI API key not configured'}
+            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
         
         try:
             prompt = f"""Rewrite this content to be SEO-optimized for the keyword: "{target_keyword}"
@@ -236,12 +243,17 @@ SEO-Optimized Version:"""
                 ]
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            error_msg = str(e)
+            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
+                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
+            elif 'quota' in error_msg.lower():
+                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
+            return {'success': False, 'error': error_msg}
     
     def humanize_content(self, text):
         """Make content sound more human and natural"""
         if not self.client:
-            return {'success': False, 'error': 'OpenAI API key not configured'}
+            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
         
         try:
             prompt = f"""Rewrite this content to sound more human, natural, and conversational.
@@ -282,12 +294,17 @@ Humanized Version:"""
                 ]
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            error_msg = str(e)
+            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
+                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
+            elif 'quota' in error_msg.lower():
+                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
+            return {'success': False, 'error': error_msg}
     
     def improve_readability(self, text):
         """Simplify content for better readability"""
         if not self.client:
-            return {'success': False, 'error': 'OpenAI API key not configured'}
+            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
         
         try:
             prompt = f"""Rewrite this content to be easier to read and understand.
@@ -328,12 +345,17 @@ Simplified Version:"""
                 ]
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            error_msg = str(e)
+            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
+                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
+            elif 'quota' in error_msg.lower():
+                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
+            return {'success': False, 'error': error_msg}
     
     def boost_engagement(self, text):
         """Make content more engaging and compelling"""
         if not self.client:
-            return {'success': False, 'error': 'OpenAI API key not configured'}
+            return {'success': False, 'error': 'AI features require a valid OpenAI API key. Please contact the administrator.'}
         
         try:
             prompt = f"""Rewrite this content to be more engaging, compelling, and captivating.
@@ -375,4 +397,9 @@ Engaging Version:"""
                 ]
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            error_msg = str(e)
+            if '401' in error_msg or 'not_authorized' in error_msg or 'archived' in error_msg.lower():
+                error_msg = 'Invalid or expired OpenAI API key. Please update your API key.'
+            elif 'quota' in error_msg.lower():
+                error_msg = 'OpenAI API quota exceeded. Please check your billing.'
+            return {'success': False, 'error': error_msg}
