@@ -14,66 +14,49 @@ class AIContentImprover:
         # Try Groq first (FREE - fastest)
         groq_key = os.getenv('GROQ_API_KEY')
         if groq_key:
-            groq_key = groq_key.strip()  # Remove whitespace
+            groq_key = groq_key.strip()
             if groq_key:
                 try:
                     from groq import Groq
-                    # Validate key format
                     if not groq_key.startswith('gsk_'):
-                        self.init_errors.append(f"Groq key format invalid (should start with 'gsk_'). Current: {groq_key[:10]}...")
+                        self.init_errors.append(f"Invalid Groq key format (should start with 'gsk_')")
                     else:
                         self.client = Groq(api_key=groq_key)
-                        # Test with a simple call
-                        try:
-                            test = self.client.chat.completions.create(
-                                model="llama-3.1-70b-versatile",
-                                messages=[{"role": "user", "content": "hi"}],
-                                max_tokens=5
-                            )
-                            self.provider = 'groq'
-                            print("✓ Using Groq AI (Free & Fast)")
-                            return
-                        except Exception as test_err:
-                            self.init_errors.append(f"Groq API test failed: {str(test_err)[:150]}")
+                        self.provider = 'groq'
+                        print("✓ Using Groq AI (Free & Fast)")
+                        return
                 except ImportError:
-                    self.init_errors.append("Groq library not installed. Run: pip install groq")
+                    self.init_errors.append("Groq library not installed")
                 except Exception as e:
-                    self.init_errors.append(f"Groq failed: {str(e)[:150]}")
+                    self.init_errors.append(f"Groq init error: {str(e)[:100]}")
         
         # Try Google Gemini (FREE tier available)
         gemini_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
         if gemini_key:
-            gemini_key = gemini_key.strip()  # Remove whitespace
+            gemini_key = gemini_key.strip()
             if gemini_key:
                 try:
                     import google.generativeai as genai
                     genai.configure(api_key=gemini_key)
-                    
-                    # Try different model names (API versions change frequently)
-                    models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'models/gemini-pro']
-                    for model_name in models_to_try:
+                    # Try different model names
+                    for model in ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']:
                         try:
-                            self.client = genai.GenerativeModel(model_name)
-                            # Test it works
-                            test = self.client.generate_content("Hi", generation_config={'max_output_tokens': 5})
+                            self.client = genai.GenerativeModel(model)
                             self.provider = 'gemini'
-                            print(f"✓ Using Google Gemini ({model_name})")
+                            print(f"✓ Using Google Gemini ({model})")
                             return
-                        except Exception as model_err:
+                        except:
                             continue
-                    
-                    # If all models failed
-                    self.init_errors.append("Gemini: No available model found. Try Groq instead.")
-                    
+                    self.init_errors.append("Gemini: No working model found")
                 except ImportError:
-                    self.init_errors.append("Gemini library not installed. Run: pip install google-generativeai")
+                    self.init_errors.append("Gemini library not installed")
                 except Exception as e:
-                    self.init_errors.append(f"Gemini failed: {str(e)[:150]}")
+                    self.init_errors.append(f"Gemini init error: {str(e)[:100]}")
         
         # Fallback to OpenAI (Paid)
         openai_key = os.getenv('OPENAI_API_KEY')
         if openai_key:
-            openai_key = openai_key.strip()  # Remove whitespace
+            openai_key = openai_key.strip()
             if openai_key:
                 try:
                     from openai import OpenAI
@@ -82,20 +65,28 @@ class AIContentImprover:
                     print("✓ Using OpenAI (Paid)")
                     return
                 except ImportError:
-                    self.init_errors.append("OpenAI library not installed. Run: pip install openai")
+                    self.init_errors.append("OpenAI library not installed")
                 except Exception as e:
-                    self.init_errors.append(f"OpenAI failed: {str(e)[:150]}")
+                    self.init_errors.append(f"OpenAI init error: {str(e)[:100]}")
         
         print("⚠ No AI provider configured")
         if self.init_errors:
-            print("Errors encountered:")
+            print("Initialization errors:")
             for error in self.init_errors:
                 print(f"  - {error}")
     
     def _call_ai(self, prompt, system_message="You are an expert content writer.", temperature=0.7, max_tokens=2500):
         """Universal AI caller that works with all providers"""
         if not self.client:
-            return None
+            error_details = f"Init errors: {', '.join(self.init_errors)}" if self.init_errors else "No API keys found in environment variables"
+            raise Exception(
+                f"No AI provider configured!\n\n"
+                f"Get a FREE API key:\n"
+                f"• GROQ (BEST): https://console.groq.com/keys\n"
+                f"• Gemini: https://makersuite.google.com/app/apikey\n\n"
+                f"Add it to Vercel: Settings → Environment Variables → GROQ_API_KEY\n\n"
+                f"Debug: {error_details}"
+            )
         
         try:
             if self.provider == 'groq':
