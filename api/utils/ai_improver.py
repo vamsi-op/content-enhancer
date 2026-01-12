@@ -9,22 +9,25 @@ class AIContentImprover:
     def __init__(self):
         self.client = None
         self.provider = None
+        self.init_errors = []
         
         # Try Groq first (FREE - fastest)
         groq_key = os.getenv('GROQ_API_KEY')
-        if groq_key:
+        if groq_key and groq_key.strip():
             try:
                 from groq import Groq
                 self.client = Groq(api_key=groq_key)
                 self.provider = 'groq'
                 print("✓ Using Groq AI (Free & Fast)")
                 return
+            except ImportError:
+                self.init_errors.append("Groq library not installed. Run: pip install groq")
             except Exception as e:
-                print(f"Groq initialization failed: {e}")
+                self.init_errors.append(f"Groq failed: {str(e)[:100]}")
         
         # Try Google Gemini (FREE tier available)
         gemini_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-        if gemini_key:
+        if gemini_key and gemini_key.strip():
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=gemini_key)
@@ -32,22 +35,30 @@ class AIContentImprover:
                 self.provider = 'gemini'
                 print("✓ Using Google Gemini (Free tier)")
                 return
+            except ImportError:
+                self.init_errors.append("Gemini library not installed. Run: pip install google-generativeai")
             except Exception as e:
-                print(f"Gemini initialization failed: {e}")
+                self.init_errors.append(f"Gemini failed: {str(e)[:100]}")
         
         # Fallback to OpenAI (Paid)
         openai_key = os.getenv('OPENAI_API_KEY')
-        if openai_key:
+        if openai_key and openai_key.strip():
             try:
                 from openai import OpenAI
                 self.client = OpenAI(api_key=openai_key)
                 self.provider = 'openai'
                 print("✓ Using OpenAI (Paid)")
                 return
+            except ImportError:
+                self.init_errors.append("OpenAI library not installed. Run: pip install openai")
             except Exception as e:
-                print(f"OpenAI initialization failed: {e}")
+                self.init_errors.append(f"OpenAI failed: {str(e)[:100]}")
         
-        print("⚠ No AI provider configured. Set GROQ_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY")
+        print("⚠ No AI provider configured")
+        if self.init_errors:
+            print("Errors encountered:")
+            for error in self.init_errors:
+                print(f"  - {error}")
     
     def _call_ai(self, prompt, system_message="You are an expert content writer.", temperature=0.7, max_tokens=2500):
         """Universal AI caller that works with all providers"""
@@ -92,10 +103,16 @@ class AIContentImprover:
                 
         except Exception as e:
             error_msg = str(e)
-            if '401' in error_msg or 'not_authorized' in error_msg:
-                raise Exception(f'Invalid {self.provider.upper()} API key. Please check your credentials.')
-            elif 'quota' in error_msg.lower() or 'rate_limit' in error_msg.lower():
-                raise Exception(f'{self.provider.upper()} quota/rate limit exceeded. Try again later.')
+            provider_name = self.provider.upper() if self.provider else "AI"
+            
+            if '401' in error_msg or 'not_authorized' in error_msg or 'invalid' in error_msg.lower():
+                raise Exception(f'Invalid {provider_name} API key. Get a FREE key: https://console.groq.com (Groq) or https://makersuite.google.com/app/apikey (Gemini)')
+            elif 'quota' in error_msg.lower():
+                raise Exception(f'{provider_name} quota exceeded. Switch to FREE Groq: https://console.groq.com')
+            elif 'rate_limit' in error_msg.lower():
+                raise Exception(f'{provider_name} rate limit reached. Try again in a moment or use FREE Groq.')
+            elif 'api_key' in error_msg.lower():
+                raise Exception(f'{provider_name} API key issue. Get FREE key: https://console.groq.com')
             raise e
         
         return None
