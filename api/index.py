@@ -48,6 +48,44 @@ def health_check():
         "error": IMPORT_ERROR if not MODULES_LOADED else None
     })
 
+@app.route('/api/ai-status', methods=['GET'])
+def ai_status():
+    """Debug endpoint to check AI provider configuration"""
+    try:
+        from utils.ai_improver import AIContentImprover
+        ai = AIContentImprover()
+        
+        env_keys = {
+            'groq': 'set' if os.getenv('GROQ_API_KEY') else 'not set',
+            'gemini': 'set' if os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY') else 'not set',
+            'openai': 'set' if os.getenv('OPENAI_API_KEY') else 'not set'
+        }
+        
+        # Show first/last 4 chars of keys for debugging (safe)
+        key_previews = {}
+        if os.getenv('GROQ_API_KEY'):
+            key = os.getenv('GROQ_API_KEY')
+            key_previews['groq'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
+        if os.getenv('GEMINI_API_KEY'):
+            key = os.getenv('GEMINI_API_KEY')
+            key_previews['gemini'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
+        if os.getenv('OPENAI_API_KEY'):
+            key = os.getenv('OPENAI_API_KEY')
+            key_previews['openai'] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "too_short"
+        
+        return jsonify({
+            'current_provider': ai.provider,
+            'provider_initialized': ai.client is not None,
+            'environment_keys': env_keys,
+            'key_previews': key_previews,
+            'initialization_errors': ai.init_errors if hasattr(ai, 'init_errors') else []
+        })
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'traceback': str(e.__traceback__)
+        }), 500
+
 @app.route('/api/analyze', methods=['POST'])
 def analyze_content():
     """Main endpoint to analyze content"""
